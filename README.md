@@ -1,64 +1,45 @@
-# Randomized Queues & Deques
+# Deques and Randomized Queues
 
-Java implementations of two fundamental data structures: a **Deque** (double-ended queue) and a **Randomized Queue** — both with constant amortized time for all operations.
+Two generic collections in Java, written for a data structures course, plus two client programs that use them.
 
-## Data Structures
+## Data structures (`Randomized Queues/`)
 
-### Deque
-A generalization of a stack and queue that supports insertion and removal at **both ends**.
+### `LinkedDeque<Item>`: double-ended queue
+A doubly linked list supporting insertion, removal and peeking at **both ends** in constant time.
 
-```
-addFirst()  →  [ A | B | C | D ]  →  removeLast()
-addLast()   ←  [ A | B | C | D ]  ←  removeFirst()
-```
-
-| Operation | Time Complexity |
+| Operation | Time |
 |---|---|
-| `addFirst` | O(1) amortized |
-| `addLast` | O(1) amortized |
-| `removeFirst` | O(1) amortized |
-| `removeLast` | O(1) amortized |
-| `size` | O(1) |
+| `addFirst`, `addLast` | O(1) |
+| `removeFirst`, `removeLast` | O(1) |
+| `peekFirst`, `peekLast`, `size`, `isEmpty` | O(1) |
 
-### Randomized Queue
-Like a queue, but `dequeue()` returns a **uniformly random** item — equivalent to sampling without replacement.
+### `ResizingArrayRandomQueue<Item>`: randomized queue
+A resizing array where `dequeue()` removes a **uniformly random** item and `sample()` returns one without
+removing it. Each iterator returns the items in an independent random order (it copies and shuffles them).
 
-| Operation | Time Complexity |
+| Operation | Time |
 |---|---|
-| `enqueue` | O(1) amortized |
-| `dequeue` | O(1) amortized |
-| `sample` | O(1) |
-| `size` | O(1) |
+| `enqueue` | O(1) amortized (array doubles when full) |
+| `dequeue` | O(1) amortized (random item swapped with the last; array halves when ¼ full) |
+| `sample`, `size`, `isEmpty` | O(1) |
 
-## Implementation Details
+## Client programs
 
-- **Deque** — implemented with a doubly linked list for O(1) operations at both ends
-- **Randomized Queue** — implemented with a resizing array; random access enables O(1) uniform sampling via Fisher-Yates shuffle
+| File | What it does |
+|---|---|
+| `Sample.java` | `java Sample lo hi k mode`: puts the integers lo…hi in a randomized queue and prints `k` of them, with replacement (`+`, via `sample`) or without (`-`, via `dequeue`) |
+| `Sort.java` | Reads words from standard input and prints them in sorted order using a deque (and a stack for insertions in the middle) |
 
-## Application: Permutation
+## Run
 
-```bash
-# Print k uniformly random items from stdin (no repeats)
-java Permutation k < input.txt
-```
+Uses the course libraries (`stdlib`, `dsa`).
 
 ```bash
-echo "A B C D E F G H I" | java Permutation 3
-→ C
-→ G
-→ A
+javac LinkedDeque.java ResizingArrayRandomQueue.java Sample.java Sort.java
+java Sample 1 10 3 -            # 3 distinct random integers from 1..10
+java Sort < words.txt           # words in sorted order
 ```
 
-## Technologies
+## Concepts
 
-- **Java**
-- Doubly linked list (Deque)
-- Resizing array with Fisher-Yates sampling (RandomizedQueue)
-- Generic types with `Iterator` support
-
-## Build & Run
-
-```bash
-javac Deque.java RandomizedQueue.java Permutation.java
-java Permutation 3 < words.txt
-```
+Linked lists · resizing arrays and amortized analysis · uniform random sampling · generics and iterators
